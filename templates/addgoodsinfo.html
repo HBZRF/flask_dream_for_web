@@ -1,0 +1,163 @@
+{% extends "layout.html" %}
+
+{% block head %}
+		<script src={{url_for('static',filename = 'jquery-3.4.1.js')}}></script>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>货物信息更新（Goods Info Update）</title>
+		<meta name="description" content="网页的描述信息">
+		<meta name="keywords" content="关键词,关键词">
+        {% endblock %}
+
+{% block head_js %}
+			$(document).ready(function(){
+			  $("#button_gengxin").click(function (){
+			      var resxx = '1';
+			    $("input").each(function()
+			    {if ($(this).val()==""){
+			    		alert($(this).attr("name")+"不能为空！（"+$(this).attr("name")+" can not be empty,pls fill it !!）");
+			    		$(this).focus();
+			    		resxx = '0'
+			    		return false}
+
+			    }
+			    );
+                $("select").each(
+                    function () {
+
+
+
+                  if ($(this).find("option:selected").attr("value") == "") {
+			        alert($(this).attr("name")+"不能为空！（"+$(this).attr("name")+" can not be empty,pls fill it !!）");
+			        $(this).focus();
+			        resxx = '0';
+			        return false
+                };
+                  }
+
+
+
+
+                );
+
+
+
+
+
+
+
+			    if (resxx == '1'){
+                    $("#form1").submit();
+                };
+			  });
+			 $("#button_chaxun").click(function(){
+			 	var res = $("input[name='goodcode']").val();
+			 	if (res==""){
+			 		alert("请输入货号信息！！（pls input the goodscode! ）");
+			 		$("input[name='goodcode']").focus();
+			 					 		
+			 	}
+			 	else
+			 	{
+			 	    var url = "/addgoods/"
+                   $.get(url,{
+        goodcode:res,
+    },function(data,status){
+                       if (status == 'success'){
+                           var result = eval("("+data+")");
+                           $("input.goodsinfo").each(function(){
+                               $(this).val(result[$(this).attr("name")])
+                           });
+                           $("select").each(function(){
+                               $(this).val(result[$(this).attr("name")])
+                           });
+                            var respics = result["Pic1Name1"]
+                            respics_list = respics.split(';');
+
+                           var respic1 = result[$("#pic1").attr("name")];
+                           var respic2 = result[$("#pic2").attr("name")];
+                           var picurl = "http://0861.info/uploads/" + respics_list[0];
+                           var picur2 = "http://0861.info/uploads/" + respics_list[1];
+                           $("#pic1").attr("src",picurl);
+                           $("#pic2").attr("src",picur2);
+                       };
+    });
+			 	}
+
+			 })
+			});
+    {% endblock %}
+{% block head_css %}
+        label{
+            display: inline-block;
+            width: 330px;
+            text-align: right;
+        }
+        input{
+            width: 150px;
+        }
+        button{
+            width: 150px;
+        }
+        .div0{
+        	float: left;
+        	height: 900px;
+        	width: 40%
+        }               
+        .field{
+        	height: 50%
+        }
+    {% endblock %}
+{% block body %}
+		<div class="div0">
+		<form action="#" method="post" name="form1" id = "form1"  enctype="multipart/form-data" >
+		<fieldset class="field" >
+			<legend><h1>货物信息更新（Goods Info Update）</h1></legend>
+			<label>Turn&emsp;Id（周期）:</label><input class = "goodsinfo" type="number" name="TurnId" value="" /> <br /><br />
+			<label>Serial&emsp;Number（串号）:</label><input class = "goodsinfo" type="number" name="SerialNumber" value="" /><br /><br />
+        <label>Goods code（货号）:</label><input class = "goodsinfo" type="number" name="goodcode" value="" /><br /><br />
+			<label>Brand（品牌）:</label><input type="text" class = "goodsinfo" name="Brand" value="" /><br /><br />
+			<label>Color（颜色）:</label><input type="text" class = "goodsinfo" name="Color" value="" /><br /><br />
+			<label>Standards（规格）:</label><input type="text" class = "goodsinfo" name="Standards" value=""  /><br /><br />
+            {% if usr_type =='admin' %}
+                <label>OrderId（订单号）:</label><input class = "goodsinfo" type="number" value="" id = "sernbr" name="OrderId" value = "" /><br /><br />
+                <label>Factory（厂家）:</label><input class = "goodsinfo" type="text"  value="" name="factory" /> <br /><br />
+                <label>实在（）:</label><input class = "goodsinfo" type="number" name="shizai" value="" /><br /><br />
+            {% endif %}
+			<label>Unit&emsp;Price（单价 RMB）:</label><input class = "goodsinfo" type="number" value="" name="UnitPrice" /><br /><br />
+            <label>Estimate&emsp;Price（估价 RMB）:</label><input class = "goodsinfo" type="number" value="" name="EstimatePrice" /><br /><br />
+			<label>owener：</label>
+			<select name="owener" id = 'owener'>
+                <option value="" selected disabled>--</option>
+				<option value="1">Padi</option>
+				<option value="2">Tanya</option>
+                <option value="3">Mark</option>
+                <option value="4">Sara</option>
+                <option value="5">regis</option>
+                <option value="6">zhenzhen</option>
+                <option value="7">jeannette</option>
+                <option value="8">ronald</option>
+                <option value="9">caleb</option>
+			</select><br /><br />		
+			<label>GoodsType：</label>
+			<select name="GoodsType" id = 'GoodsType'>
+				<option value="" selected disabled>--</option>
+				<option value="bag">包/bag</option>
+				<option value="hair">头发/hair</option>
+				<option value="shoes">鞋/shoes</option>
+                <option value="Bedding">床品/Bedding</option>
+                <option value="clothes">衣服/clothes</option>
+                <option value="hat">帽子/hat</option>
+                <option value="other">其它/other</option>
+			</select><br /><br />
+			<input type="button" id="button_gengxin" value="提交更新"   />
+			<button type="button" id="button_chaxun" >查询</button>
+		</fieldset>
+        </form>
+        </div>
+        <div class="div1" id="div1">
+		<fieldset class="field" >
+			<legend><h1>图例（pictures）</h1></legend>
+			<img id = "pic1" name="Pic1Name1"  class="pic"  height="450" width="50%" /><img  id = "pic2" name="Pic1Name2"   height="450" width="50%" />
+		</fieldset>
+		</div>
+{% endblock %}

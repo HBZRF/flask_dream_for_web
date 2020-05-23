@@ -1,0 +1,23 @@
+{% for goodsrow in resgoods %}
+        <tr>
+        {% for goods in goodsrow %}
+            <td>
+            <div>
+                    {% set url = url_for("goodinfobycode",nbr = goods.goodcode)  %}
+                    <a href={{ url }} target="view_windo">
+                             {% set piclist = goods.Pic1Name1.split(';') %}
+                    {% set pic = piclist[0] %}
+                       <img src={{ url_for('uploaded_file',filename=pic) }} />
+                        {% if g.usr_type == 'L2' or g.usr_type == 'admin' %}
+                             &nbsp;&nbsp;{{ goods.GoodsTitle }} {{ goods.UnitPrice }}¥</span>
+                        {% else %}
+                            {{ goods.GoodsTitle }} {{ goods.UnitPrice }}¥</span>
+
+              {% endif %}
+                    </a>
+            </div>
+            </td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+

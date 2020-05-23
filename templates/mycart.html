@@ -1,0 +1,152 @@
+{% extends "layout.html" %}
+
+
+{% block head %}
+		<meta charset="utf-8">
+		<title>我的购物车</title>
+        <script src={{url_for('static',filename = 'jquery-3.4.1.js')}}></script>
+		<meta name="description" content="网页的描述信息">
+		<meta name="keywords" content="关键词,关键词">
+{% endblock %}
+
+{% block head_css %}
+        #mycart{
+width:100%;
+}
+    #mycart tr{
+    width:100%;
+    font-size:20px;
+height:50px;
+}
+   #mycart td{
+    text-align:center;
+    width:20%;
+height:50px;
+}
+
+{% endblock %}
+{% block head_js %}
+    $(document).ready(function(){
+    $("#addtomycart").click(function(){
+    var amount = $("#amount").val();
+    var url = window.location.href;
+    });
+    $(".minus").click(
+    function(){
+    var curren_amount = $(this).next().find("input").val();
+    if (curren_amount<=0){
+    alert("购买数量需为正整数，Purchase Quantity Need to be Positive Integer ");
+    return
+    }
+    var uniteprice = $(this).parent().parent().siblings(".price").text();
+    var subtotal = $(this).parent().parent().siblings(".subtotal").text();
+    var new_amount = Number(curren_amount)-1;
+    $(this).next().find("input").val(new_amount);
+    $(this).parent().parent().siblings(".subtotal").text(uniteprice*new_amount);
+    var curren_total = $("#totalprice").text();
+    $("#totalprice").text(curren_total-uniteprice);
+    });
+
+    $(".plus").click(
+    function(){
+    var curren_amount = $(this).prev().find("input").val();
+    if (curren_amount<0){
+    alert("购买数量需为正整数，Purchase Quantity Need to be Positive Integer ");
+    return
+    }
+    var uniteprice = $(this).parent().parent().siblings(".price").text();
+    var subtotal = $(this).parent().parent().siblings(".subtotal").text();
+    var new_amount = Number(curren_amount)+1;
+    $(this).prev().find("input").val(new_amount);
+    $(this).parent().parent().siblings(".subtotal").text(uniteprice*new_amount);
+    var curren_total = $("#totalprice").text();
+    $("#totalprice").text(Number(curren_total)+Number(uniteprice));
+    });
+
+
+    $("#submit_bt").click(
+    function (){
+    var arrayObj = new Array();
+    var is_has_goods = 0
+    $(".content").each(function(){
+    var goodcode = $(this).find(".goodcode").text();
+    var amount = $(this).find(".amountipt").val();
+    var price = $(this).find(".price").text();
+    var data = {
+    "goodcode":goodcode,
+    "amount":amount,
+    "price":price,
+    };
+    arrayObj.push(data)
+    var is_has_goods = 1
+    });
+
+    var url = 'http://0861.info/mycart/';
+    var str_json = JSON.stringify(arrayObj)
+
+    $.post(url,{content:str_json},function(data){
+    alert(data);
+    $("table").html(data);
+    });
+
+    });
+
+
+
+
+
+
+    })
+{% endblock %}
+
+
+{% block body %}
+    <div style="width: 100%;background-color: orange;text-align: center;margin-top: 0px;float: left">
+     <label><h1>购物车明细（goods list）</h1></label>
+    </div>
+
+<table border="1" id = 'mycart'>
+<tr>
+<td>货物码（goodscode）</td>
+<td>单价（Unit Price）</td>
+<td>数量（amount）</td>
+<td>小结（subtotal）</td>
+<td>总计（total）</td>
+</tr>
+{% set totalmoney =0 %}
+
+   {% for good in goods %}
+    <tr class="content">
+    <td class="goodcode">{{ good.goodcode }}</td>
+    <td class="price">{{ good.UnitPrice }}</td>
+    <td class="amount" id = "ddd">
+        <div style="width: 60%;height: 60%;overflow: hidden;margin-left: 20%">
+        <span class="minus" style="height:100%;width: 20%;background-color: aqua;float: left;margin-left: 20%;margin-top: 0px">－</span>
+            <div style="height:100%;width: 25%;float: left;margin-left: 0px;background-color: orange;overflow: hidden">
+        <input   class="amountipt" style="height: 100%;width: 100%;text-align: center;font-size: 20px;border: 3px;background-color: gold" value = {{ good.buyamount }}   >
+                </div>
+        <span class="plus" style="height:100%;width: 20%;background-color: aqua;float: left;">＋</span>
+        </div>
+    </td>
+        {% set subtotal = good.UnitPrice*good.buyamount  %}
+    <td class="subtotal">{{ subtotal }}</td>
+        {% if loop.first %}
+
+    <td rowspan={{ loop.length }} id = "totalprice">{{ good.totalmoney }}</td>
+    {% endif %}
+
+    </tr>
+{% endfor %}
+
+
+
+
+
+</table>
+
+    <div style="width: 100%;background-color: orange;text-align: center;margin-top: 0px;float: right">
+
+     <label style="float: right"><button type = button id = "submit_bt"><h1>生成订单（make order）</h1></button></label>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,28 @@
+import win32api, win32gui, win32con,time,random
+
+hwnd_title = dict()
+
+sleep_time = random.uniform(1.1,2.3)
+def get_all_hwnd(hwnd, mouse):
+    if win32gui.IsWindow(hwnd) and win32gui.IsWindowEnabled(hwnd) and win32gui.IsWindowVisible(hwnd):
+        hwnd_title.update({hwnd: win32gui.GetWindowText(hwnd)})
+
+
+win32gui.EnumWindows(get_all_hwnd, 0)
+
+for h, t in hwnd_title.items():
+    if t is not "":
+        if '三国' in t:
+            act_times = 1
+            while 1:
+                sleep_time = random.uniform(0.5,1.3)
+                win32api.PostMessage(h, win32con.WM_KEYDOWN, win32con.VK_A, 0)
+                time.sleep(sleep_time)
+                #sleep_time = random.uniform(0.2, 0.9)
+                #win32api.PostMessage(h, win32con.WM_KEYDOWN, win32con.VK_S, 0)
+                #time.sleep(sleep_time)
+                #sleep_time = random.uniform(1.8, 2.9)
+                #win32api.PostMessage(h, win32con.WM_KEYDOWN, win32con.VK_D, 0)
+                #time.sleep(sleep_time)
+                print('执行了第 {act_times} 次'.format(act_times = act_times))
+                act_times = act_times + 1

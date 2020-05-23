@@ -1,0 +1,266 @@
+{% extends "layout.html" %}
+{% block head %}
+		<meta charset="utf-8">
+        <script src={{url_for('static',filename = 'jquery-3.4.1.js')}}></script>
+		<title>goods overview</title>
+		<meta name="description" content="网页的描述信息">
+		<meta name="keywords" content="关键词,关键词">
+{% endblock %}
+{% block head_js %}
+        $(document).ready(function(){
+
+            $("#frontpage").click(function () {
+    var reqtype = $(".input-reqgoodtype:checked").attr("value");
+                url = 'http://0861.info/goodsoverview/' ;
+                var currentpage = Number($("#currentpage").attr('value'));
+                var goodstypes = $("#goodstype").attr('value');
+                var maxpics = $("#maxpics").attr('value');
+                var limit = $("#limit").attr('value');
+                if (currentpage <=1){
+                    alert("已经是第一页了！！")
+                    return
+                }
+                $.post(url,{
+                    currentpage:currentpage-2,
+                    GoodsType:reqtype,
+                },function (data) {
+        data = eval("("+data+")");
+                    $("table").html(data["data"]);
+
+                    var realcurrentpage = currentpage - 1;
+                    $("#currentpage").attr('value',realcurrentpage);
+                    $("#spanpage").text(realcurrentpage);
+                })
+            });
+
+            $(".input-reqgoodtype").click(function(){
+    var reqtype = $(".input-reqgoodtype:checked").attr("value");
+    url = 'http://0861.info/goodsoverview/' ;
+                    $.post(url,{
+                    GoodsType:reqtype,
+                    is_changetype:1,
+                },function (data) {
+    data = eval("("+data+")")
+    $("table").html(data['data']);
+    $("#maxpics").attr('value',data['maxpics']);
+    $("#goodstype").attr('value',data['GoodType']);
+    $("#currentpage").attr('value',1);
+    $("#spanpage").text(1);
+
+                })
+
+
+
+
+    });
+
+
+
+
+
+
+            $("#nextpage").click(function () {
+    var reqtype = $(".input-reqgoodtype:checked").attr("value");
+                url = 'http://0861.info/goodsoverview/' ;
+                var currentpage = Number($("#currentpage").attr('value'));
+                var goodstypes = $("#goodstype").attr('value');
+                var maxpics = $("#maxpics").attr('value');
+                var limit = $("#limit").attr('value');
+                if (currentpage*limit >= maxpics){
+                    alert("已经是最后页了！！")
+                    return
+                }
+                $.post(url,{
+                    currentpage:currentpage ,
+                    GoodsType:reqtype,
+                },function (data) {
+    data = eval("("+data+")");
+                    $("table").html(data["data"]);
+                    var realcurrentpage = currentpage + 1;
+                    $("#currentpage").attr('value',realcurrentpage);
+                    $("#spanpage").text(realcurrentpage);
+                })
+            });
+        })
+
+
+    {% endblock %}
+{% block head_css %}
+
+        #div1{
+    height:100px;
+    background: red;
+    overflow: hidden;
+    width:100%;
+    }
+
+	    table.imglist{ margin:0 auto; width:100%;}
+	    table.imglist tr{ overflow: scroll;width:100%;}
+    a{text-decoration:none}
+	    table.imglist tr td{  height: 400px; width:20%;overflow: }
+	    table.imglist tr td div{ height: 100%; background:#F9FBFF;float:left;overflow:hidden;}
+	    table.imglist tr td div img{ display:block; width:100%; height: 89%; overflow: scroll; padding:3px 3px; border: 1px;}
+	    table.imglist tr td div span{ text-align: center;  height:5%;border: 1px; }
+
+        .bt{
+            height:100%;
+    backgroud-color:red;
+    width:100%;
+    text-align: center;
+    font-size:red;
+        }
+    .div3{
+    width:100%;
+    text-align: center;
+    }
+            #frontpage{
+                height:100%;
+                width:15%;
+                background-color: aqua;
+    font-size:15px;
+
+            }
+            #nextpage{
+                height:100%;
+    font-size:15px;
+
+
+                width:15%;
+                background-color: aqua;
+
+            }
+            #displaypage{
+                height:100%;
+                width:20%;
+
+
+            }
+            #spanpage{
+                color: crimson;
+            }
+            #nav{
+                float:left;
+                width:20%;
+                padding-top: 2px;
+            }
+            #login{
+                padding-left: 40%;
+            }
+            #goodstitle{
+
+
+                width:100%;
+
+                margin-top: 0;
+                height: 50%;
+
+            }
+            #biaoti1{
+    width:100%;
+
+                margin-top: 1px;
+    text-align: center;
+
+
+
+            }
+    #goodstype{
+
+
+                width:100%;
+     background-color:rgba(255,255,0,0.4);
+
+                height: 50%;
+    }
+    .lable-reqgoodtype{
+    float:left;
+    backgroud-color:red;
+    margin-top:13px;
+    height:100%;
+    width:40%；
+    font-size: 50px;
+    }
+    .input-reqgoodtype{
+    margin-left:20px;
+
+    }
+    .sercherlable{
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    height:100%;
+    }
+
+
+{% endblock %}
+
+{% block body %}
+    <body>
+    <div id = "div1">
+        <div id="goodstitle">
+            <h1   id = "biaoti1">货物预览系统（goods overview）</h1>
+            </div>
+        {#<div id = 'goodstype'>
+
+            <label class="lable-reqgoodtype" style="font-size:20px;"><input name="reqtype" type="radio"  class="input-reqgoodtype" value="all" checked/>所有货物/all </label>
+            <label class="lable-reqgoodtype" style="font-size:20px;"><input name="reqtype" type="radio" class="input-reqgoodtype"  value="hair" />假发/hair </label>
+            <label class="lable-reqgoodtype" style="font-size:20px;" ><input name="reqtype" type="radio"  class="input-reqgoodtype" value="bag" disabled/>包包/bag </label>
+            <label class="lable-reqgoodtype" style="font-size:20px;"><input name="reqtype" type="radio" class="input-reqgoodtype" value="shoes" disabled/>鞋/shoes </label>
+            <label class="lable-reqgoodtype" style="font-size:20px;"><input name="reqtype" type="radio" class="input-reqgoodtype" value="Bedding" disabled/>床品/Bedding </label>
+            <label class="lable-reqgoodtype" style="font-size:20px;"><input name="reqtype" type="radio" class="input-reqgoodtype" value="clothes" disabled/>衣服/clothes </label>
+            <label class="lable-reqgoodtype" style="font-size:20px;"><input name="reqtype" type="radio" class="input-reqgoodtype" value="other" disabled/>其他/other </label>
+
+        </div>#}
+        <div id = 'divsercher' style="margin-bottom: 0px;background-color: #9C1A1C">
+            <label class="sercherlable" style="font-size:20px;height: 100%;background-color: #3B666B;">搜索： </label>
+            <label class="sercherlable" style="font-size:20px;margin-left: 50px">长度： </label>
+            <select class="sercherlable" name="TypeOfLace" style="font-size:20px; " >
+				<option value="" selected disabled>--</option>
+                            <option value="0x0">0x0</option>
+				<option value="4x4">4x4</option>
+                <option value="13x4">13x4</option>
+                        </select>
+        </div>
+    </div>
+	<table class="imglist">
+    {% for goodsrow in resgoods %}
+        <tr>
+        {% for goods in goodsrow %}
+            <td>
+            <div>
+                    {% set url = url_for("goodinfobycode",nbr = goods.goodcode)  %}
+                    <a href={{ url }} target="view_windo">
+                    {% set piclist = goods.Pic1Name1.split(';') %}
+                    {% set pic = piclist[0] %}
+                       <img src={{ url_for('uploaded_file',filename=pic) }} />
+                        {% if g.usr_type == 'L2' or g.usr_type == 'admin' %}
+                            {# Price:{{ goods.UnitPrice }} #} <span>{{ goods.GoodsTitle }} </span><br><span>{{ goods.UnitPrice }}¥</span>
+                        {% else %}
+                            {# <span>Price:{{ goods.UnitPrice }} #}<span> {{ goods.GoodsTitle }}</span><br><span>{{ goods.UnitPrice }}¥</span>
+                        {% endif %}
+
+                    </a>
+
+            </div>
+            </td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+
+</table>
+    <div id = "div3" style="height:50px;background: beige">
+        <div class="bt">
+        <button  id="frontpage" type="button" style="text-align:center"  >上一页(frontpage)</button>
+            <label id = 'displaypage'  > page <span id = "spanpage">（{{ currentpage }}）</span></label>
+        <button id ="nextpage" type="button" style="text-align:center" >下一页(nextpage)</button>
+            </div>
+    </div>
+    <div id="div4">
+                            <label id = 'limit' hidden value = {{ limit }} > </label>
+        <label id = 'currentpage' hidden value = {{ currentpage }} > </label>
+        <label id = 'maxpics' hidden value = {{ total_count }}></label>
+    <label id = 'goodstype' hidden value = {{ GoodType }}></label>
+
+    </div>
+    </body>
+{% endblock %}

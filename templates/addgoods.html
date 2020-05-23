@@ -1,0 +1,158 @@
+{% extends "layout.html" %}
+{% block head %}
+		<script src={{url_for('static',filename = 'jquery-3.4.1.js')}}></script>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>货物信息更新（Goods Info Update）</title>
+		<meta name="description" content="网页的描述信息">
+		<meta name="keywords" content="关键词,关键词">
+{% endblock %}
+ {% block head_js %}
+			$(document).ready(function(){
+			  $("#button_gengxin").click(function (){
+			      var resxx = '1';
+			    $("input").each(function()
+			    {if ($(this).val()==""){
+			    		alert($(this).attr("name")+"不能为空！（"+$(this).attr("name")+" can not be empty,pls fill it !!）");
+			    		$(this).focus();
+			    		resxx = '0'
+			    		return false};
+			    }
+			    );
+			    if (resxx == '1'){
+                    $("#form1").submit();
+                };
+			  });
+			 $("#button_chaxun").click(function(){
+			 	var res = $("input[name='goodcode']").val();
+			 	if (res==""){
+			 		alert("请输入串号信息！！（pls input the goodcode! ）");
+			 		$("input[name='goodcode']").focus();
+			 					 		
+			 	}
+			 	else
+			 	{
+			 	    var url = "/addgoods/"
+                   $.get(url,{
+        goodcode:res,
+    },function(data,status){
+                       if (status == 'success'){
+                           var result = eval("("+data+")");
+                           $("input.goodsinfo").each(function(){
+                               $(this).val(result[$(this).attr("name")])
+                           });
+                           $("select").each(function(){
+                               $(this).val(result[$(this).attr("name")])
+                           });
+                           var respic1 = result[$("#pic1").attr("name")];
+                           var respic2 = result[$("#pic2").attr("name")];
+                           var picurl = "http://0861.info/uploads/" + respic1;
+                           var picur2 = "http://0861.info/uploads/" + respic2;
+                           $("#pic1").attr("src",picurl);
+                           $("#pic2").attr("src",picur2);
+                       };
+    });
+			 	}
+
+			 })
+			});
+			{% endblock %}
+{% block head_css %}
+        label{
+            display: inline-block;
+            width: 330px;
+            text-align: right;
+        }
+        input{
+            width: 150px;
+        }
+        button{
+            width: 150px;
+        }
+        .div0{
+        	float: left;
+        	height: 900px
+        	width: 40%;
+        }               
+        .field{
+        	height: 50%
+        }
+{% endblock %}
+
+
+{% block body %}
+		<div class="div0">
+		<form action="#" method="post" name="form1" id = "form1"  enctype="multipart/form-data" >
+		<fieldset class="field" >
+            <legend><h1>货物新增（Goods Info add）</h1></legend>
+            <label>GoodsTitle（货物标题）:</label><input class = "goodsinfo" type="text"  value="" name="GoodsTitle" /> <br /><br />
+        <label>Goods code（货号）:</label><input class = "goodsinfo" type="number" name="goodcode" value="" /><br /><br />
+			<label>Brand（品牌）:</label><input type="text" class = "goodsinfo" name="Brand" value="" /><br /><br />
+            <label>Category（分类）:</label>
+            			<select name="Category" >
+				<option value="" selected disabled>--</option>
+				<option value="wig">头套/wig</option>
+                <option value="bundle">发帘/bundle</option>
+            </select><br /><br />
+            <label>HairStyle（类型）:</label>
+             			<select name="HairStyle" >
+				<option value="" selected disabled>--</option>
+				<option value="bob">bob</option>
+                <option value="nobob">nobob</option>
+
+                            </select><br /><br />
+            <label>Length（长度）:</label><input type="text" class = "goodsinfo" name="Length" value=""  /><br /><br />
+            {#
+            <label>Standards（规格）:</label><input type="text" class = "goodsinfo" name="Standards" value=""  /><br /><br />
+            #}
+			<label>Color（颜色）:</label><input type="text" class = "goodsinfo" name="Color" value="" /><br /><br />
+            <label>TypeOfLace（蕾丝类型）:</label>
+             			<select name="TypeOfLace" >
+				<option value="" selected disabled>--</option>
+                            <option value="0x0">0x0</option>
+				<option value="4x4">4x4</option>
+                <option value="13x4">13x4</option>
+
+
+                        </select>
+                            <br /><br />
+            <label>Density（密度）:</label><input type="text" class = "goodsinfo" name="Density" value="" /><br /><br />
+
+            {#
+            <label>OrderId（订单号）:</label><input class = "goodsinfo" type="number" value="" id = "sernbr" name="OrderId" value = "" /><br /><br />
+            #}
+            <label>Factory（厂家）:</label><input class = "goodsinfo" type="text"  value="" name="factory" /> <br /><br />
+            <label>实在（）:</label><input class = "goodsinfo" type="number" name="shizai" value="" /><br /><br />
+			<label>Unit&emsp;Price（单价 RMB）:</label><input class = "goodsinfo" type="number" value="" name="UnitPrice" /><br /><br />
+                            {#
+            <label>Estimate&emsp;Price（估价 RMB）:</label><input class = "goodsinfo" type="number" value="" name="EstimatePrice" /><br /><br />
+			#}
+			<label>GoodsType：</label>
+			<select name="GoodsType" >
+				<option value="" selected disabled>--</option>
+
+				<option value="hair">头发/hair</option>
+                {#
+                <option value="bag">包/bag</option>
+				<option value="clothe">衣服/clothes</option>
+				<option value="shoes">鞋/shoes</option>
+                <option value="Bedding">床品/Bedding</option>
+                <option value="hat">帽子/hat</option>
+                #}
+                <option value="other">其它/other</option>
+			</select><br /><br />
+            <label>上传示例图片（upload pictures-1）：</label><input type="file" size="10" name="photo1" multiple="multiple" accept = ‘image/* /><br /><br />
+            {#
+            <label>上传示例图片（upload pictures-2）：</label><input type="file" size="10" name="photo2" accept = ‘image/* /><br /><br />
+            #}
+			<input type="button" id="button_gengxin" value="提交更新"   />
+			<button type="button" id="button_chaxun" >查询</button>
+		</fieldset>
+        </form>
+        </div>
+        <div class="div1" id="div1">
+		<fieldset class="field" >
+			<legend><h1>图例（pictures）</h1></legend>
+			<img id = "pic1" name="Pic1Name1"  class="pic"  height="450" width="50%" /><img  id = "pic2" name="Pic1Name2"   height="450" width="50%" />
+		</fieldset>
+		</div>
+{% endblock %}

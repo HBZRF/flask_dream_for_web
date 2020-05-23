@@ -1,0 +1,150 @@
+{% extends "layout.html" %}
+
+
+{% block head %}
+		<meta charset="utf-8">
+		<title>订单管理 </title>
+        <script src={{url_for('static',filename = 'jquery-3.4.1.js')}}></script>
+		<meta name="description" content="网页的描述信息">
+		<meta name="keywords" content="关键词,关键词">
+{% endblock %}
+
+{% block head_css %}
+        #mycart{
+width:100%;
+}
+    #mycart tr{
+    width:100%;
+    font-size:20px;
+height:50px;
+}
+   #mycart td{
+    text-align:center;
+    width:10%;
+height:50px;
+}
+
+{% endblock %}
+{% block head_js %}
+    $(document).ready(function(){
+    $("#addtomycart").click(function(){
+    var amount = $("#amount").val();
+    var url = window.location.href;
+    });
+    $(".minus").click(
+    function(){
+    var curren_amount = $(this).next().find("input").val();
+    if (curren_amount<=0){
+    alert("购买数量需为正整数，Purchase Quantity Need to be Positive Integer ");
+    return
+    }
+    var uniteprice = $(this).parent().parent().siblings(".price").text();
+    var subtotal = $(this).parent().parent().siblings(".subtotal").text();
+    var new_amount = Number(curren_amount)-1;
+    $(this).next().find("input").val(new_amount);
+    $(this).parent().parent().siblings(".subtotal").text(uniteprice*new_amount);
+    var curren_total = $("#totalprice").text();
+    $("#totalprice").text(curren_total-uniteprice);
+    });
+
+    $(".plus").click(
+    function(){
+    var curren_amount = $(this).prev().find("input").val();
+    if (curren_amount<0){
+    alert("购买数量需为正整数，Purchase Quantity Need to be Positive Integer ");
+    return
+    }
+    var uniteprice = $(this).parent().parent().siblings(".price").text();
+    var subtotal = $(this).parent().parent().siblings(".subtotal").text();
+    var new_amount = Number(curren_amount)+1;
+    $(this).prev().find("input").val(new_amount);
+    $(this).parent().parent().siblings(".subtotal").text(uniteprice*new_amount);
+    var curren_total = $("#totalprice").text();
+    $("#totalprice").text(Number(curren_total)+Number(uniteprice));
+    });
+
+
+    $("#submit_bt").click(
+    function (){
+    var arrayObj = new Array();
+    var is_has_goods = 0
+    $(".content").each(function(){
+    var goodcode = $(this).find(".goodcode").text();
+    var amount = $(this).find(".amountipt").val();
+    var price = $(this).find(".price").text();
+    var data = {
+    "goodcode":goodcode,
+    "amount":amount,
+    "price":price,
+    };
+    arrayObj.push(data)
+    var is_has_goods = 1
+    });
+
+    var url = 'http://0861.info/mycart/';
+    var str_json = JSON.stringify(arrayObj)
+
+    $.post(url,{content:str_json},function(data){
+    alert(data);
+    $("table").html(data);
+    });
+
+    });
+
+
+
+
+
+
+    })
+{% endblock %}
+
+
+{% block body %}
+    <div style="width: 100%;background-color: orange;text-align: center;margin-top: 0px;float: left">
+     <label><h1>订单管理（orders list）</h1></label>
+    </div>
+
+<table border="1" id = 'mycart'>
+<tr>
+<td>owner</td>
+<td>Turn ID</td>
+<td>goods cost</td>
+<td>Freight from factory</td>
+<td>Freight to agent</td>
+<td>Freight to abord customs</td>
+<td>Freight to door</td>
+<td>Quantity total</td>
+<td>Quantity sold</td>
+<td>Surplus quantity</td>
+<td>update time</td>
+</tr>
+   {% for order in orders %}
+    <tr class="content">
+    <td class="goodcode">{{ order.usr_id }}</td>
+    <td class="price"><a href={{ url_for('orderinfo',uid = order.orderuid )}}>{{ order.turnid }}</a></td>
+    <td class="orderprice_UnitPrice">{{ order.orderprice_UnitPrice }}</td>
+        <td class="delivery_fee_from_factory">{{ order.delivery_fee_from_factory }}</td>
+        <td class="delivery_fee_to_agent">{{ order.delivery_fee_to_agent }}</td>
+        <td class="delivery_fee_China_to_abord">{{ order.delivery_fee_China_to_abord }}</td>
+        <td class="dutyfee">{{ order.dutyfee }}</td>
+        <td class="delivery_fee__custom_to_Selle">{{ order.delivery_fee__custom_to_Seller }}</td>
+    <td class="dutyfee">{{ order.dutyfee }}</td>
+    <td class="dutyfee">{{ order.dutyfee }}</td>
+    <td class="dutyfee">{{ order.dutyfee }}</td>
+        <td class="timestp">{{ order.timestp }}</td>
+    </tr>
+{% endfor %}
+
+
+
+
+
+</table>
+
+    <div style="width: 100%;background-color: orange;text-align: center;margin-top: 0px;float: right;height:80px">
+
+
+
+    </div>
+{% endblock %}

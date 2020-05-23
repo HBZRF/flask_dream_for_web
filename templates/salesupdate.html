@@ -1,0 +1,177 @@
+{% extends "layout.html" %}
+{% block head %}
+		<script src={{url_for('static',filename = 'jquery-3.4.1.js')}}></script>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>货物信息更新（Goods Info Update）</title>
+		<meta name="description" content="网页的描述信息">
+		<meta name="keywords" content="关键词,关键词">
+{% endblock %}
+{% block head_js %}
+			$(document).ready(function(){
+			  $("#button_gengxin").click(function (){
+			      var resxx = '1';
+			      var res = $("input[name='SerialNumber']").val();
+			      var res2 = $("input[name='SoledPrice']").val();
+			      var res3 = $("input[name='goodcode']").val();
+			      if (res == ""){
+			          alert("请输入串号信息！！（pls input the SerialNumber! ）");
+			 		$("input[name='SerialNumber']").focus();
+			 		return
+                  }
+			      if (res3 == ""){
+			          alert("请先输入串号并点击查询！！/pls first click the query button !!!")
+                      return
+
+                  };
+                  if (res2 == ""){
+			          alert("请输入售价信息！！（pls input the SoledPrice! ）");
+			 		$("input[name='SoledPrice']").focus();
+                  }
+			      else {
+			         var url = "/tasktodo/";
+			         $.post(url,{
+			             SerialNumber:res,
+                         SoledPrice:res2,
+                         action:"update",
+                         },
+                         function (data) {
+			             alert(data)
+
+                     })
+                  };
+			  });
+			 $("#button_chaxun").click(function(){
+			 	var res = $("input[name='SerialNumber']").val();
+			 	if (res==""){
+			 		alert("请输入串号信息！！（pls input the SerialNumber! ）");
+			 		$("input[name='SerialNumber']").focus();
+
+			 	}
+			 	else
+			 	{
+                    $("input.goodsinfo").each(function(){
+                        $(this).val('')
+                           });
+                           $("select").each(function(){
+                               $(this).val('')
+                           });
+
+			 	    var url = "/tasktodo/"
+                   $.post(url,{
+        SerialNumber:res,
+    },function(data,status){
+                       if (status == 'success'){
+                           var result = eval("("+data+")");
+                           if (result['status'] == 'nok'){
+                               alert(result["info"])
+                               $("input[name='SerialNumber']").val(res);
+
+                               $("input[name='SerialNumber']").focus();
+                           }
+                           else
+                           {
+                           $("input.goodsinfo").each(function(){
+                               $(this).val(result[$(this).attr("name")])
+                           });
+                           $("select").each(function(){
+                               $(this).val(result[$(this).attr("name")])
+                           });
+                           var respic1 = result[$("#pic1").attr("name")];
+                           var respic2 = result[$("#pic2").attr("name")];
+                           var picurl = "http://0861.info/uploads/" + respic1;
+                           var picur2 = "http://0861.info/uploads/" + respic2;
+                           $("#pic1").attr("src",picurl);
+                           $("#pic2").attr("src",picur2);
+                           }
+                       };
+    });
+			 	}
+
+			 })
+			});
+{% endblock %}
+{% block head_css %}
+ 	    <style type="text/css">
+        label{
+            display: inline-block;
+            width: 330px;
+            text-align: right;
+        }
+        input{
+            width: 150px;
+        }
+        button{
+            width: 150px;
+        }
+        .div0{
+        	float: left;
+        	height: 900px
+        	width: 99%;
+        }
+        .field{
+        	height: 50%
+        }
+            #surmy{
+            float: left;
+                background-color: aqua;
+                width: 100%;
+                height:50px;
+            margin-top: 0px;
+                text-align: center;
+            background-color: orange;
+            margin-top: 0px;
+            }
+        #h111{
+        float: left;
+        margin-top: 5px;
+        margin-left: 35%;
+        }
+{% endblock %}
+{% block body %}
+
+    <div id = 'surmy' >
+        <h1 id="h111" >需要更新的货物数量为 <span style="color:red">{{ total_count }}</span> 件。</h1>
+    </div>
+		<div class="div0">
+		<form action="#" method="post" name="form1" id = "form1"  enctype="multipart/form-data" >
+		<fieldset class="field" >
+			<legend><h1>货物信息更新（Goods Info Update）</h1></legend>
+        <label>Serial&emsp;Number（串号）:</label><input class = "goodsinfo" type="number" name="SerialNumber" value="" /><br /><br />
+			<label>Turn&emsp;Id（周期）:</label><input class = "goodsinfo" type="number" name="TurnId" value="" disabled/> <br /><br />
+
+        <label>Goods code（货号）:</label><input class = "goodsinfo" type="number" name="goodcode" value="" disabled/><br /><br />
+			<label>Brand（品牌）:</label><input type="text" class = "goodsinfo" name="Brand" value="" disabled/><br /><br />
+			<label>Color（颜色）:</label><input type="text" class = "goodsinfo" name="Color" value="" disabled/><br /><br />
+			<label>Standards（规格）:</label><input type="text" class = "goodsinfo" name="Standards" value=""  disabled/><br /><br />
+			<label>Unit&emsp;Price（单价 RMB）:</label><input class = "goodsinfo" type="number" value="" name="UnitPrice" disabled/><br /><br />
+            <label>Estimate&emsp;Price（估价 RMB）:</label><input class = "goodsinfo" type="number" value="" name="EstimatePrice" disabled/><br /><br />
+			<label disabled>owener：</label>
+			<select name="owener" disabled>
+                <option value="" selected disabled>--</option>
+				<option value="1">Padi</option>
+				<option value="2">Tanya</option>
+                <option value="3">Mark</option>
+			</select><br /><br />
+			<label disabled>GoodsType：</label>
+			<select name="GoodsType" disabled>
+				<option value="" selected disabled>--</option>
+				<option value="bag">包/bag</option>
+				<option value="hair">头发/hair</option>
+				<option value="clothe">衣服/clothe</option>
+				<option value="shoes">鞋/shoes</option>
+                <option value="Bedding">床品/Bedding</option>
+                <option value="clothes">衣服/clothes</option>
+			</select><br /><br />
+            <label>SoldPrice（售价）:</label><input type="text" class = "goodsinfo" name="SoledPrice" value="" type="number" /><br /><br />
+			<input type="button" id="button_gengxin" value="提交更新/commit "   />
+			<button type="button" id="button_chaxun" >查询/query</button>
+		</fieldset>
+        </form>
+        </div>
+        <div class="div1" id="div1">
+		<fieldset class="field" >
+			<legend><h1>图例（pictures）</h1></legend>
+			<img id = "pic1" name="Pic1Name1"  class="pic"  height="450" width="50%" /><img  id = "pic2" name="Pic1Name2"   height="450" width="50%" />
+		</fieldset>
+		</div>
+{% endblock %}

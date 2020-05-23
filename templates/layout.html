@@ -1,0 +1,167 @@
+<!doctype html>
+<head>
+{% block head %}
+{% endblock %}
+<script type="text/javascript">
+{% block head_js %}
+{% endblock %}
+ </script>
+
+<style type="text/css">
+.footer {
+    background-color:lavender;
+    width:100%;
+
+    overflow:hidden;
+    height: 250px;
+    margin-top: 10px;
+}
+.fanwei {
+    float:left;
+    width:18%;
+    margin-left: 2%;
+    background-color: cornsilk;
+    height: 100%;
+}
+.fanwei li {
+    list-style:none;
+    margin-top: 15px;
+    margin-left: 20px;
+}
+.fanwei p {
+    font-size: 20px;
+    padding-left: 50px;
+
+}
+		.nav{
+				list-style: none;
+            width: 100%;
+				float: right;
+            padding-right: 0px;
+			}
+			.nav li{
+				float: left;
+
+				width: 10%;
+                height: 30%;
+				margin: 5px;
+				text-align: center;
+			}
+        #divnav{
+            overflow: hidden;
+            background-color: aqua;
+        }
+        #logo{
+            float: left;
+width: 250px;
+height: 78px;
+            background-size: 200px 32px;
+margin-top: 0px;
+            display: block;
+
+        }
+        #hello{
+            float: left;
+            font-size: 20px;
+            padding-left: 10px;
+            padding-top: 10px;
+            width:3%;
+
+        }
+{% block head_css %}
+{% endblock %}
+</style>
+</head>
+<body>
+<div id="divnav" >
+
+        {% if g.user == 'ddd' %}
+                <li id="hello">hello：<span style="color: crimson">{{ g.user }}</span></li>
+        {% endif %}
+
+		<ul class="nav">
+            <a href = {{ url_for("index") }}><img id = "logo" src={{ url_for('static',filename="logo.png") }}  ></a>
+
+
+
+
+
+			<li><a href={{ url_for("index") }}>Home/首页</a></li>
+            {% if g.usr_type == 'admin' %}
+                <li><a href={{ url_for("addgoods") }}>货物新增/Goods add</a></li>
+			<li><a href={{ url_for("addgoodsinfo") }}>货物管理/Goods Management</a></li>
+            {% endif %}
+			<li><a href={{ url_for("tasktodo") }}>销售管理/Sales Management</a></li>
+            <li><a href={{ url_for("ordermanager") }}>订单管理/Order Management</a></li>
+
+			<li><a href={{ url_for('mycart') }}>购物车/My Cart</a></li>
+        {% if g.user %}
+                <li><a href={{ url_for("logout") }}>登出/Logout</a></li>
+        {% else %}
+            <li><a href={{ url_for("login") }}>登陆/Login</a></li>
+        {% endif %}
+		</ul>
+</div>
+{% block body %}
+{% endblock %}
+</body>
+<footer>
+{% block footer %}
+<div class="footer">
+<div class="fanwei" >
+<address id = "add1" >
+    <p>Business line：</p>
+    <li>software development</li>
+    <li>programme design</li>
+    <li>international trade</li>
+    <li>International Logistics</li>
+</address>
+</div>
+<div class="fanwei">
+<address id = "add1" >
+    <p>Contact us：</p>
+    <li><a href="mailto:technology0861@163.com">James</a><br></li>
+    <li>whatsapp: +86 18640510219</li>
+    <li>whatsapp: +86 18519121147</li>
+    <li>website: http://0861.info</li>
+</address>
+</div>
+<div class="fanwei" >
+<address id = "add1" >
+    <p>Business line：</p>
+    <li>software development</li>
+    <li>programme design</li>
+    <li>international trade</li>
+    <li>International Logistics</li>
+</address>
+</div>
+<div class="fanwei">
+<address id = "add1" >
+    <p>Contact us：</p>
+    <li><a href="mailto:technology0861@163.com">James</a><br></li>
+    <li>whatsapp: +86 18640510219</li>
+    <li>whatsapp: +86 18519121147</li>
+    <li>website: http://0861.info</li>
+</address>
+</div>
+<div class="fanwei" >
+<address id = "add1" >
+    <p>Business line：</p>
+    <li>software development</li>
+    <li>programme design</li>
+    <li>international trade</li>
+    <li>International Logistics</li>
+</address>
+</div>
+<div class="fanwei">
+<address id = "add1" >
+    <p>Contact us：</p>
+    <li><a href="mailto:technology0861@163.com">James</a><br></li>
+    <li>whatsapp: +86 18640510219</li>
+    <li>website: http://0861.info</li>
+</address>
+</div>
+</div>
+{% endblock %}
+</footer>
+</html>

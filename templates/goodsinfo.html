@@ -1,0 +1,119 @@
+{% extends "layout.html" %}
+{% block head_js %}
+    $(document).ready(function(){
+    $("#addtomycart").click(function(){
+    var amount = $("#amount").val();
+    var url = window.location.href;
+    $.post(url,
+    {
+    buyamount:amount,
+    },
+    function (data){
+    $("#divboss").html(data)
+
+
+    }
+    );
+
+
+
+    });
+
+
+
+
+
+
+    })
+{% endblock %}
+{% block head %}
+	<head>
+		<meta charset="utf-8">
+		<title>货物信息</title>
+        <script src={{url_for('static',filename = 'jquery-3.4.1.js')}}></script>
+		<meta name="description" content="网页的描述信息">
+		<meta name="keywords" content="关键词,关键词">
+ 	    <style type="text/css">
+        label{
+            display: inline-block;
+            width: 250px;
+            text-align: right;
+        }
+        input{
+            width: 150px;
+        }
+        .div0{
+        	float: left;
+        	height: 900px;
+        	width: 32%;
+        }        
+        .div1{
+        	float: left;
+        	width: 68%;
+         }        
+        .picture1{
+        	margin-top: 0px;
+        	float: left;
+        	background-color: red; 
+        }        
+        .picture2{
+        	float: left;
+        	background-color: blue; 
+        }
+        #button input{
+            width: 60px;
+            position: relative;
+            left: 30%;
+        }        
+        .field{
+        	height: 530px
+        }
+    	</style>
+	</head>
+{% endblock %}
+{% block body %}
+    <div id = "divboss">
+		<div class="div0">
+		<form action="#" method="post" name="form1"  enctype="" ">
+		<fieldset class="field" >
+			<legend><h1>货物信息（Goods Info）</h1></legend>
+        <label>GoodsTitle（货物标题）:</label><input  name="GoodsTitle" value="{{ GoodsTitle }}" disabled  /><br /><br />
+			<label>Goods Code（货号）:</label><input type="number" name="SerialNumber" value={{ goodcode }} disabled  /><br /><br />
+			<label>Brand（品牌）:</label><input type="text" name="Brand" value={{ Brand }} disabled /><br /><br />
+        <label>Category（分类）:</label><input type="text" name="Category" value={{ Category }} disabled /><br /><br />
+			<label>Color（颜色）:</label><input type="text" name="Color" value={{ Color }} disabled /><br /><br />
+			<label>HairStyle（类型）:</label><input type="text" name="HairStyle" value={{ HairStyle }} disabled /><br /><br />
+        <label>Length（长度）:</label><input type="number" name="Length" value={{ Length }} disabled /><br /><br />
+        <label>TypeOfLace（蕾丝类型）:</label><input type="text" name="TypeOfLace" value={{ TypeOfLace }} disabled /><br /><br />
+
+			<label>GoodsType：</label><input type="text" name="GoodsType"  value={{ GoodsType }} disabled/><br /><br />
+
+         {#   {% if g.user %}
+                <label>EstimatePrice Price（RMB）:</label><input class = "goodsinfo" type="number" value= {{ EstimatePrice }} disabled /><br /><br />
+        {% endif %}
+        #}
+
+
+            {% if  g.usr_type == 'admin' %}
+
+            <label>Unit&emsp;Price（单价 RMB）:</label><input type="number" name="UnitPrice" value="{{ UnitPrice }}" disabled /><br /><br />
+            {% endif %}
+            <label>Buy (购买):</label ><input style="width: 50px" class = "goodsinfo" type="number" value= 1 id = "amount"/><button type="button" id = 'addtomycart'style="width: 100px">加入购物车</button>
+
+            <br /><br />
+
+
+
+		</fieldset>
+		</form>
+		</div>
+		<div class="div1">
+		<fieldset class="field" >
+                     {% set piclist = Pic1Name1.split(';') %}
+
+			<legend><h1>图例（pictures）</h1></legend>
+			<img src={{ url_for('uploaded_file',filename=piclist[0]) }} height="450" width="50%" /><img src={{ url_for('uploaded_file',filename=piclist[1]) }} height="450" width="50%" />
+		</fieldset>
+		</div>
+    </div>
+{% endblock %}
